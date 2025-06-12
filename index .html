@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple E-Commerce</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+  <!-- Navigation Bar -->
+  <nav class="bg-blue-600 text-white p-4 sticky top-0 z-10">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">ShopEasy</h1>
+      <div class="flex items-center space-x-4 relative">
+        <a href="#" class="hover:text-gray-200" id="home-link">Home</a>
+        <div class="relative">
+          <a href="#" class="hover:text-gray-200" id="products-link">Products</a>
+          <div id="category-dropdown" class="absolute hidden bg-white text-black mt-2 w-48 rounded shadow-lg z-10">
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="all">All</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="electronics">Electronics</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="mens-wear">Mens Wear</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="women-wear">Women Wear</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="kids-wear">Kids Wear</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="toys">Toys</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="jewellery">Jewellery</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="accessories">Accessories</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="home-appliance">Home Appliance</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="foot-wear">Foot wear</a>
+          </div>
+        </div>
+        <a href="#" class="hover:text-gray-200" id="contact-link">Contact</a>
+        <a href="#" class="hover:text-gray-200" id="login-link">Login</a>
+        <a href="#" class="hover:text-gray-200" id="logout-link">Logout</a>
+        <div class="relative">
+          <button id="cart-btn" class="hover:text-gray-200">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count-nav" class="absolute -top-2 -right-2 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+          </button>
+        </div>
+        <div class="relative">
+          <input type="text" id="search-bar" class="p-2 rounded text-black w-64 pr-10" placeholder="Search products...">
+          <i id="search-icon" class="fas fa-search absolute right-10 top-2.5 text-gray-500"></i>
+          <i id="clear-search" class="fas fa-times absolute right-2 top-2.5 text-gray-500 cursor-pointer hidden"></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Login Modal -->
+  <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4">Login</h2>
+      <form id="login-form">
+        <div class="mb-4">
+          <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
+          <input type="text" id="username" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+          <input type="password" id="password" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="flex justify-between">
+          <button type="button" id="close-login" class="bg-gray-500 text-white px-4 py-2 rounded">Close</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Product Grid -->
+  <section id="product-section" class="container mx-auto py-8">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Our Products</h2>
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Products will be populated by JavaScript -->
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact-section" class="container mx-auto py-8 hidden">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Contact Us</h2>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+      <form id="contact-form">
+        <div class="mb-4">
+          <label for="name" class="block text-gray-700 font-semibold mb-2">Name</label>
+          <input type="text" id="name" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+          <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
+          <input type="email" id="email" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+          <label for="message" class="block text-gray-700 font-semibold mb-2">Message</label>
+          <textarea id="message" class="w-full p-2 border rounded" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Submit</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Login Section -->
+  <section id="login-section" class="container mx-auto py-8 hidden">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Login</h2>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+      <form id="login-form-section">
+        <div class="mb-4">
+          <label for="username-login" class="block text-gray-700 font-semibold mb-2">Username</label>
+          <input type="text" id="username-login" class="w-full p-2 border rounded" required>
+        </div>
+        <div class="mb-4">
+          <label for="password-login" class="block text-gray-700 font-semibold mb-2">Password</label>
+          <input type="password" id="password-login" class="w-full p-2 border rounded" required>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Login</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Logout Section -->
+  <section id="logout-section" class="container mx-auto py-8 hidden">
+    <h2 class="text-3xl font-semibold mb-6 text-center">Logout</h2>
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+      <div id="logout-container">
+        <p id="welcome-message-section" class="text-lg font-semibold mb-4"></p>
+        <button id="logout-btn-section" class="bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+      </div>
+      <div id="not-logged-in-message" class="hidden">
+        <p class="text-lg font-semibold mb-4">You are not logged in.</p>
+        <a href="#" id="go-to-login" class="bg-blue-600 text-white px-4 py-2 rounded">Go to Login</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart Modal -->
+  <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4">Your Cart</h2>
+      <div id="cart-items" class="mb-4 max-h-64 overflow-y-auto">
+        <!-- Cart items will be populated by JavaScript -->
+      </div>
+      <div class="flex justify-between items-center mb-4">
+        <span class="font-semibold">Total:</span>
+        <span id="cart-total" class="font-semibold">₹0.00</span>
+      </div>
+      <div class="flex justify-between">
+        <button id="close-cart" class="bg-gray-500 text-white px-4 py-2 rounded">Close</button>
+        <button id="checkout-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4">Checkout</h2>
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2">Delivery Date</h3>
+        <input type="date" id="delivery-date" class="w-full p-2 border rounded" min="" required>
+      </div>
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2">Delivery Address</h3>
+        <textarea id="address" class="w-full p-2 border rounded" rows="4" placeholder="Enter your address" required></textarea>
+      </div>
+      <div class="mb-4">
+        <h3 class="text-lg font-semibold mb-2">Payment Method</h3>
+        <select id="payment-method" class="w-full p-2 border rounded" required>
+          <option value="" disabled selected>Select payment method</option>
+          <option value="credit-card">Credit Card</option>
+          <option value="upi">UPI</option>
+          <option value="cod">Cash on Delivery</option>
+        </select>
+      </div>
+      <div class="flex justify-between">
+        <button id="back-to-cart" class="bg-gray-500 text-white px-4 py-2 rounded">Back to Cart</button>
+        <button id="place-order" class="bg-green-600 text-white px-4 py-2 rounded">Place Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fixed Bottom Cart Summary -->
+  <div id="cart-summary" class="fixed bottom-0 left-0 w-full bg-white p-4 shadow-lg flex justify-between items-center border-t border-gray-300 hidden">
+    <button id="view-cart" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full flex items-center">
+      <i class="fas fa-shopping-cart mr-2"></i>
+      <span>View Cart</span>
+      <span id="cart-count-summary" class="bg-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center ml-2">0</span>
+    </button>
+    <div id="quantity-control" class="bg-pink-500 text-white px-4 py-2 rounded-full flex items-center space-x-2 hidden">
+      <button id="decrement">-</button>
+      <span id="quantity">1</span>
+      <button id="increment">+</button>
+    </div>
+  </div>
+
+  <script>
+    // Sample product data with prices in INR and categories (now as arrays)
+    const products = [
+      { id: 1, name: "Smartphone", price: 24999, image: "assests/iphone15.jpg", category: ["electronics"] },
+      { id: 2, name: "Laptop", price: 66999, image: "assests/laptop hp.jpg", category: ["electronics"] },
+      { id: 3, name: "Headphones", price: 4199, image: "assests/headphone boat.jpg", category: ["electronics"] },
+      { id: 4, name: "Smartwatch", price: 16799, image: "assests/smart watch titan.jpg", category: ["electronics"] },
+      { id: 5, name: "Mens Wear", price: 8399, image: "assests/mens wear.jpg", category: ["mens-wear"] },
+      { id: 6, name: "Women Wear", price: 8399, image: "assests/women wear.jpg", category: ["women-wear"] },
+      { id: 7, name: "Kids Wear", price: 8399, image: "assests/kids wear.jpg", category: ["kids-wear"] },
+      { id: 8, name: "Jewellery", price: 41999, image: "assests/jewellery.jpeg", category: ["jewellery"] },
+      { id: 9, name: "1.5 TR Super Efficient 5 Star Split AC", price: 30000, image: "assests/AC.jpeg", category: ["electronics", "home-appliance"] },
+      { id: 10, name: "Medium 30 L Laptop Backpack Laptop Backpack Medium Waterproof School Bag/College Bag/For Unisex (Black, Grey)", price: 1000, image: "assests/college bag.jpg", category: ["accessories"] },
+      { id: 11, name: "Milton Purple Handy 850 Single Walled Stainless Steel Water Bottle 780 ml", price: 250, image: "assests/water bottle.jpg", category: ["home-appliance"] },
+      { id: 12, name: "Buy Canon EOS R7 Mirrorless Camera with 18-150mm Lens online from Sharp Imaging", price: 160600.09, image: "assests/Canon camera.jpg", category: ["electronics"] },
+      { id: 13, name: "kids toys", price: 200, image: "assests/kid toys.jpg", category: ["toys"] },
+      { id: 14, name: "TECKNET Wired Mouse, USB Wired Computer Mouse, 3600DPI 4 Adjustable Levels, 6-Button Ergonomic Mice,", price: 2000, image: "assests/Mouse.jpg", category: ["electronics"] },
+      { id: 15, name: "Redmi TV", price: 70000, image: "assests/Redmi.jpg", category: ["electronics"] },
+      { id: 16, name: "Cookology American 4-Door Fridge Freezer 515L Frost Free Large - Inox QUAT515IX", price: 70000, image: "assests/Fridge.jpg", category: ["electronics"] },
+      { id: 17, name: "Vincent Chase Unisex Square Polarized Sunglasses New Zealand | Ubuy", price: 400, image: "assests/cooling glass.jpg", category: ["accessories"] },
+      { id: 18, name: "Thermal Insulated Curtains | Curtain for Living Room | (116 x 215 cm, Navy Blue) | Perfect for Home Decor", price: 3000, image: "assests/curtain.jpg", category: ["home-appliance"] },
+      { id: 19, name: "Realme Buds T310 True Wireless ( Vibrant Black )", price: 1000, image: "assests/Ear Buds.jpg", category: ["electronics"] },
+      { id: 20, name: "Buy LG Front Load Washing Machine 10Kg Washer & 7Kg Dryer Bigger Capacity AI DD ThinQ F4V9RCP2E| Sharafdg.com", price: 30000, image: "assests/Washing Machine.jpeg", category: ["electronics"] }, 
+      { id: 21, name: "Myki Sizzling Solitaire Adjustable Ring For Women & Girls Sterling Silver Swarovski Zirconia 24k White Gold Plated Ring", price: 500, image: "assests/Ring.png", category: ["electronics"] },
+      { id: 22, name: "AMVI BLK-GRY/ORG/BLU MENS-HOX SPORTS SHOES", price: 300, image: "assests/shoes.jpg", category: ["foot-wear"] },
+      { id: 22, name: "Premium Photo | Beautiful men fashion sandal", price: 200, image: "assests/foot Wear.png", category: ["foot-wear"] },
+
+
+
+
+    ];
+
+    // Cart array to store selected items with quantities
+    let cart = [];
+    let currentProductId = null;
+    let selectedCategory = "all";
+    let isLoggedIn = false;
+    let currentUser = null;
+    let searchQuery = "";
+
+    // DOM elements
+    const searchBar = document.getElementById("search-bar");
+    const searchIcon = document.getElementById("search-icon");
+    const clearSearch = document.getElementById("clear-search");
+    const productSection = document.getElementById("product-section");
+    const contactSection = document.getElementById("contact-section");
+    const loginSection = document.getElementById("login-section");
+    const logoutSection = document.getElementById("logout-section");
+    const productGrid = document.getElementById("product-grid");
+    const cartBtn = document.getElementById("cart-btn");
+    const cartModal = document.getElementById("cart-modal");
+    const closeCart = document.getElementById("close-cart");
+    const checkoutBtn = document.getElementById("checkout-btn");
+    const cartItems = document.getElementById("cart-items");
+    const cartCountNav = document.getElementById("cart-count-nav");
+    const cartTotal = document.getElementById("cart-total");
+    const checkoutModal = document.getElementById("checkout-modal");
+    const backToCart = document.getElementById("back-to-cart");
+    const placeOrder = document.getElementById("place-order");
+    const deliveryDate = document.getElementById("delivery-date");
+    const address = document.getElementById("address");
+    const paymentMethod = document.getElementById("payment-method");
+    const cartSummary = document.getElementById("cart-summary");
+    const viewCart = document.getElementById("view-cart");
+    const cartCountSummary = document.getElementById("cart-count-summary");
+    const quantityControl = document.getElementById("quantity-control");
+    const decrement = document.getElementById("decrement");
+    const increment = document.getElementById("increment");
+    const quantityDisplay = document.getElementById("quantity");
+    const productsLink = document.getElementById("products-link");
+    const categoryDropdown = document.getElementById("category-dropdown");
+    const homeLink = document.getElementById("home-link");
+    const contactLink = document.getElementById("contact-link");
+    const loginLink = document.getElementById("login-link");
+    const logoutLink = document.getElementById("logout-link");
+    const contactForm = document.getElementById("contact-form");
+    const loginFormSection = document.getElementById("login-form-section");
+    const logoutContainer = document.getElementById("logout-container");
+    const welcomeMessageSection = document.getElementById("welcome-message-section");
+    const logoutBtnSection = document.getElementById("logout-btn-section");
+    const notLoggedInMessage = document.getElementById("not-logged-in-message");
+    const goToLogin = document.getElementById("go-to-login");
+    const loginModal = document.getElementById("login-modal");
+    const loginForm = document.getElementById("login-form");
+    const closeLogin = document.getElementById("close-login");
+
+    // Set minimum delivery date to tomorrow
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    deliveryDate.min = tomorrow.toISOString().split("T")[0];
+
+    // Mock authentication
+    function authenticate(username, password) {
+      // Hardcoded credentials for demo purposes
+      return username === "user" && password === "password123";
+    }
+
+    // Update UI based on login status
+    function updateUI() {
+      if (isLoggedIn) {
+        logoutContainer.classList.remove("hidden");
+        notLoggedInMessage.classList.add("hidden");
+        welcomeMessageSection.textContent = `Welcome, ${currentUser}!`;
+      } else {
+        logoutContainer.classList.add("hidden");
+        notLoggedInMessage.classList.remove("hidden");
+      }
+    }
+
+    // Render products based on selected category and search query
+    function renderProducts() {
+      productSection.classList.remove("hidden");
+      contactSection.classList.add("hidden");
+      loginSection.classList.add("hidden");
+      logoutSection.classList.add("hidden");
+      productGrid.innerHTML = "";
+
+      let filteredProducts = products;
+      
+      if (selectedCategory !== "all") {
+        filteredProducts = products.filter(product => product.category.includes(selectedCategory));
+      }
+      
+      if (searchQuery) {
+        filteredProducts = filteredProducts.filter(product => 
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      if (filteredProducts.length === 0) {
+        productGrid.innerHTML = "<p class='text-center col-span-full'>No products found.</p>";
+      } else {
+        filteredProducts.forEach(product => {
+          const productCard = `
+            <div class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow flex flex-col justify-between h-full">
+              <div>
+                <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-contain mb-4">
+                <h3 class="text-lg font-semibold">${product.name}</h3>
+                <p class="text-gray-600">₹${product.price.toFixed(2)}</p>
+              </div>
+              <div class="mt-auto">
+                <button class="bg-blue-600 text-white px-4 py-2 mt-2 rounded w-full add-to-cart" data-id="${product.id}">Add to Cart</button>
+              </div>
+            </div>
+          `;
+          productGrid.innerHTML += productCard;
+        });
+      }
+
+      // Add event listeners to "Add to Cart" buttons
+      document.querySelectorAll(".add-to-cart").forEach(button => {
+        button.addEventListener("click", () => {
+          const productId = parseInt(button.dataset.id);
+          addToCart(productId);
+          showCartSummary();
+          updateQuantityControl(productId);
+        });
+      });
+    }
+
+    // Add product to cart
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const cartItem = cart.find(item => item.id === productId);
+
+      if (cartItem) {
+        cartItem.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+
+      updateCart();
+      currentProductId = productId; // Set current product for quantity control
+    }
+
+    // Remove item from cart
+    function removeFromCart(productId) {
+      cart = cart.filter(item => item.id !== productId);
+      if (cart.length === 0) {
+        cartSummary.classList.add("hidden");
+      }
+      updateCart();
+    }
+
+    // Update cart UI
+    function updateCart() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      cartCountNav.textContent = totalItems;
+      cartCountSummary.textContent = totalItems;
+
+      cartItems.innerHTML = "";
+      if (cart.length === 0) {
+        cartItems.innerHTML = "<p>Your cart is empty.</p>";
+        checkoutBtn.disabled = true;
+        checkoutBtn.classList.add("bg-gray-400", "cursor-not-allowed");
+      } else {
+        cart.forEach(item => {
+          const cartItem = `
+            <div class="flex justify-between items-center mb-2">
+              <div>
+                <span>${item.name}</span>
+                <span class="text-gray-600"> (Qty: ${item.quantity})</span>
+              </div>
+              <div class="flex items-center">
+                <span class="mr-4">₹${(item.price * item.quantity).toFixed(2)}</span>
+                <button class="text-red-500 remove-item" data-id="${item.id}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          `;
+          cartItems.innerHTML += cartItem;
+        });
+        checkoutBtn.disabled = false;
+        checkoutBtn.classList.remove("bg-gray-400", "cursor-not-allowed");
+      }
+
+      const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      cartTotal.textContent = `₹${totalPrice.toFixed(2)}`;
+
+      document.querySelectorAll(".remove-item").forEach(button => {
+        button.addEventListener("click", () => {
+          const productId = parseInt(button.dataset.id);
+          removeFromCart(productId);
+        });
+      });
+    }
+
+    // Show cart summary
+    function showCartSummary() {
+      cartSummary.classList.remove("hidden");
+    }
+
+    // Update quantity control
+    function updateQuantityControl(productId) {
+      const cartItem = cart.find(item => item.id === productId);
+      if (cartItem) {
+        quantityDisplay.textContent = cartItem.quantity;
+        quantityControl.classList.remove("hidden");
+        currentProductId = productId;
+      }
+    }
+
+    // Increment quantity
+    increment.addEventListener("click", () => {
+      if (currentProductId) {
+        const cartItem = cart.find(item => item.id === currentProductId);
+        if (cartItem) {
+          cartItem.quantity += 1;
+          updateCart();
+          updateQuantityControl(currentProductId);
+        }
+      }
+    });
+
+    // Decrement quantity
+    decrement.addEventListener("click", () => {
+      if (currentProductId) {
+        const cartItem = cart.find(item => item.id === currentProductId);
+        if (cartItem && cartItem.quantity > 1) {
+          cartItem.quantity -= 1;
+          updateCart();
+          updateQuantityControl(currentProductId);
+        } else if (cartItem && cartItem.quantity === 1) {
+          removeFromCart(currentProductId);
+          quantityControl.classList.add("hidden");
+          if (cart.length === 0) {
+            cartSummary.classList.add("hidden");
+          }
+        }
+      }
+    });
+
+    // Toggle cart modal
+    cartBtn.addEventListener("click", () => {
+      cartModal.classList.toggle("hidden");
+    });
+
+    viewCart.addEventListener("click", () => {
+      cartModal.classList.remove("hidden");
+    });
+
+    closeCart.addEventListener("click", () => {
+      cartModal.classList.add("hidden");
+    });
+
+    // Show checkout modal
+    checkoutBtn.addEventListener("click", () => {
+      if (cart.length > 0) {
+        cartModal.classList.add("hidden");
+        checkoutModal.classList.remove("hidden");
+      }
+    });
+
+    // Back to cart
+    backToCart.addEventListener("click", () => {
+      checkoutModal.classList.add("hidden");
+      cartModal.classList.remove("hidden");
+    });
+
+    // Place order
+    placeOrder.addEventListener("click", () => {
+      if (deliveryDate.value && address.value && paymentMethod.value) {
+        alert(`Order placed!\nDelivery Date: ${deliveryDate.value}\nAddress: ${address.value}\nPayment Method: ${paymentMethod.value}`);
+        cart = [];
+        updateCart();
+        checkoutModal.classList.add("hidden");
+        cartSummary.classList.add("hidden");
+        quantityControl.classList.add("hidden");
+      } else {
+        alert("Please fill in all checkout details.");
+      }
+    });
+
+    // Toggle dropdown and handle category selection
+    productsLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      categoryDropdown.classList.toggle("hidden");
+    });
+
+    // Category selection
+    categoryDropdown.querySelectorAll("a").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        selectedCategory = link.getAttribute("data-category");
+        categoryDropdown.classList.add("hidden");
+        renderProducts();
+      });
+    });
+
+    // Home link to show all products
+    homeLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      selectedCategory = "all";
+      searchQuery = "";
+      searchBar.value = "";
+      searchIcon.classList.remove("hidden");
+      clearSearch.classList.add("hidden");
+      renderProducts();
+    });
+
+    // Contact link to show contact section
+    contactLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      productSection.classList.add("hidden");
+      contactSection.classList.remove("hidden");
+      loginSection.classList.add("hidden");
+      logoutSection.classList.add("hidden");
+    });
+
+    // Handle contact form submission
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+      alert(`Thank you, ${name}! Your message has been sent.\nEmail: ${email}\nMessage: ${message}`);
+      contactForm.reset();
+    });
+
+    // Login link to show login section
+    loginLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      productSection.classList.add("hidden");
+      contactSection.classList.add("hidden");
+      loginSection.classList.remove("hidden");
+      logoutSection.classList.add("hidden");
+    });
+
+    // Logout link to show logout section
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      productSection.classList.add("hidden");
+      contactSection.classList.add("hidden");
+      loginSection.classList.add("hidden");
+      logoutSection.classList.remove("hidden");
+      updateUI();
+    });
+
+    // Go to login from logout section
+    goToLogin.addEventListener("click", (e) => {
+      e.preventDefault();
+      productSection.classList.add("hidden");
+      contactSection.classList.add("hidden");
+      loginSection.classList.remove("hidden");
+      logoutSection.classList.add("hidden");
+    });
+
+    // Show login modal
+    loginModal.addEventListener("click", (e) => {
+      if (e.target === loginModal) {
+        loginModal.classList.add("hidden");
+      }
+    });
+
+    closeLogin.addEventListener("click", () => {
+      loginModal.classList.add("hidden");
+    });
+
+    // Handle login form submission (modal)
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (authenticate(username, password)) {
+        isLoggedIn = true;
+        currentUser = username;
+        loginModal.classList.add("hidden");
+        updateUI();
+        alert("Login successful!");
+        loginForm.reset();
+      } else {
+        alert("Invalid username or password.");
+      }
+    });
+
+    // Handle login form submission (section)
+    loginFormSection.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const username = document.getElementById("username-login").value;
+      const password = document.getElementById("password-login").value;
+
+      if (authenticate(username, password)) {
+        isLoggedIn = true;
+        currentUser = username;
+        updateUI();
+        alert("Login successful!");
+        loginFormSection.reset();
+      } else {
+        alert("Invalid username or password.");
+      }
+    });
+
+    // Handle logout
+    logoutBtnSection.addEventListener("click", () => {
+      isLoggedIn = false;
+      currentUser = null;
+      updateUI();
+      alert("Logged out successfully!");
+    });
+
+    // Handle search bar input
+    searchBar.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      if (searchQuery) {
+        searchIcon.classList.add("hidden");
+        clearSearch.classList.remove("hidden");
+      } else {
+        searchIcon.classList.remove("hidden");
+        clearSearch.classList.add("hidden");
+      }
+      renderProducts();
+    });
+
+    // Handle clear search button
+    clearSearch.addEventListener("click", () => {
+      searchQuery = "";
+      searchBar.value = "";
+      searchIcon.classList.remove("hidden");
+      clearSearch.classList.add("hidden");
+      renderProducts();
+    });
+
+    // Initialize
+    renderProducts();
+    updateCart();
+    updateUI();
+  </script>
+</body>
+</html>
