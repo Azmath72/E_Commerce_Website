@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +9,36 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    /* CSS confetti animation */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.8;
+    }
+    .confetti.red { background: #ef4444; }
+    .confetti.green { background: #16a34a; }
+    .confetti.blue { background: #3b82f6; }
+    .confetti.yellow { background: #eab308; }
+    .confetti.star {
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    }
+    .confetti.circle { border-radius: 50%; }
+    .confetti.square { /* Default square shape */ }
+    @keyframes fall {
+      0% {
+        opacity: 0.8;
+        transform: translateY(-100vh) translateX(0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh) translateX(calc(var(--drift) * 1vw)) rotate(720deg);
+      }
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
   <!-- Navigation Bar -->
@@ -29,6 +60,7 @@
             <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="accessories">Accessories</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="home-appliance">Home Appliance</a>
             <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="foot-wear">Foot wear</a>
+            <a href="#" class="block px-4 py-2 hover:bg-gray-200" data-category="stationery">Stationery</a>
           </div>
         </div>
         <a href="#" class="hover:text-gray-200" id="contact-link">Contact</a>
@@ -169,13 +201,26 @@
           <option value="" disabled selected>Select payment method</option>
           <option value="credit-card">Credit Card</option>
           <option value="upi">UPI</option>
+          <option value="net-banking">Net Banking</option>
           <option value="cod">Cash on Delivery</option>
         </select>
+      </div>
+      <div id="payment-details" class="mb-4 hidden">
+        <!-- Dynamic payment fields will be populated here -->
       </div>
       <div class="flex justify-between">
         <button id="back-to-cart" class="bg-gray-500 text-white px-4 py-2 rounded">Back to Cart</button>
         <button id="place-order" class="bg-green-600 text-white px-4 py-2 rounded">Place Order</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg w-full max-w-md text-center" id="success-content">
+      <h2 class="text-2xl font-bold mb-4 text-green-600">Successfully Placed Your Order!</h2>
+      <p id="success-message" class="mb-4 whitespace-pre-line"></p>
+      <button id="close-success" class="bg-blue-600 text-white px-4 py-2 rounded">Continue Shopping</button>
     </div>
   </div>
 
@@ -205,26 +250,37 @@
       { id: 7, name: "Kids Wear", price: 8399, image: "assests/kids wear.jpg", category: ["kids-wear"] },
       { id: 8, name: "Jewellery", price: 41999, image: "assests/jewellery.jpeg", category: ["jewellery"] },
       { id: 9, name: "1.5 TR Super Efficient 5 Star Split AC", price: 30000, image: "assests/ac.jpeg", category: ["electronics", "home-appliance"] },
-      { id: 10, name: "Medium 30 L Laptop Backpack Laptop Backpack Medium Waterproof School Bag/College Bag/For Unisex (Black, Grey)", price: 1000, image: "assests/college bag.jpg", category: ["accessories"] },
-      { id: 11, name: "Milton Purple Handy 850 Single Walled Stainless Steel Water Bottle 780 ml", price: 250, image: "assests/water bottle.jpg", category: ["home-appliance"] },
-      { id: 12, name: "Buy Canon EOS R7 Mirrorless Camera with 18-150mm Lens online from Sharp Imaging", price: 160600.09, image: "assests/Canon camera.jpg", category: ["electronics"] },
-      { id: 13, name: "kids toys", price: 200, image: "assests/kid toys.jpg", category: ["toys"] },
-      { id: 14, name: "TECKNET Wired Mouse, USB Wired Computer Mouse, 3600DPI 4 Adjustable Levels, 6-Button Ergonomic Mice,", price: 2000, image: "assests/Mouse.jpg", category: ["electronics"] },
+      { id: 10, name: "Medium 30 L Laptop Backpack", price: 1000, image: "assests/college bag.jpg", category: ["accessories"] },
+      { id: 11, name: "Milton Purple Handy 850 Stainless Steel Water Bottle 780 ml", price: 250, image: "assests/water bottle.jpg", category: ["home-appliance"] },
+      { id: 12, name: "Canon EOS R7 Mirrorless Camera with 18-150mm Lens", price: 160600.09, image: "assests/Canon camera.jpg", category: ["electronics"] },
+      { id: 13, name: "Board Games | 7-9 Years", price: 200, image: "assests/Kids toys.png", category: ["toys"] },
+      { id: 14, name: "TECKNET Wired Mouse, 3600DPI", price: 2000, image: "assests/Mouse.jpg", category: ["electronics"] },
       { id: 15, name: "Redmi TV", price: 70000, image: "assests/redmi.jpg", category: ["electronics"] },
-      { id: 16, name: "Cookology American 4-Door Fridge Freezer 515L Frost Free Large - Inox QUAT515IX", price: 70000, image: "assests/Fridge.jpg", category: ["electronics"] },
-      { id: 17, name: "Vincent Chase Unisex Square Polarized Sunglasses New Zealand | Ubuy", price: 400, image: "assests/cooling glass.jpg", category: ["accessories"] },
-      { id: 18, name: "Thermal Insulated Curtains | Curtain for Living Room | (116 x 215 cm, Navy Blue) | Perfect for Home Decor", price: 3000, image: "assests/curtain.jpg", category: ["home-appliance"] },
-      { id: 19, name: "Realme Buds T310 True Wireless ( Vibrant Black )", price: 1000, image: "assests/Ear Buds.jpg", category: ["electronics"] },
-      { id: 20, name: "Buy LG Front Load Washing Machine 10Kg Washer & 7Kg Dryer Bigger Capacity AI DD ThinQ F4V9RCP2E| Sharafdg.com", price: 30000, image: "assests/Washing Machine.jpeg", category: ["electronics"] }, 
-      { id: 21, name: "Myki Sizzling Solitaire Adjustable Ring For Women & Girls Sterling Silver Swarovski Zirconia 24k White Gold Plated Ring", price: 500, image: "assests/Ring.png", category: ["jewellery"] },
+      { id: 16, name: "Cookology American 4-Door Fridge Freezer 515L", price: 70000, image: "assests/Fridge.jpg", category: ["electronics"] },
+      { id: 17, name: "Vincent Chase Unisex Square Polarized Sunglasses", price: 400, image: "assests/cooling glass.jpg", category: ["accessories"] },
+      { id: 18, name: "Thermal Insulated Curtains", price: 3000, image: "assests/curtain.jpg", category: ["home-appliance"] },
+      { id: 19, name: "Realme Buds T310 True Wireless (Vibrant Black)", price: 1000, image: "assests/Ear Buds.jpg", category: ["electronics"] },
+      { id: 20, name: "LG Front Load Washing Machine 10Kg Washer & 7Kg Dryer", price: 30000, image: "assests/Washing Machine.jpeg", category: ["electronics"] },
+      { id: 21, name: "Myki Sizzling Solitaire Adjustable Ring", price: 500, image: "assests/Ring.png", category: ["jewellery"] },
       { id: 22, name: "AMVI BLK-GRY/ORG/BLU MENS-HOX SPORTS SHOES", price: 300, image: "assests/shoes.jpg", category: ["foot-wear"] },
-      { id: 23, name: "Premium Photo | Electric Single Phase Ceiling Fans", price: 2700, image: "assests/Fan.png", category: ["electronics"] },
-      { id: 23, name: "Tp-link Outdoor Pan Tilt Security WiFi Camera, 1080P, White", price: 3000, image: "assests/cctv camera.png", category: ["electronics"] },
-
-      
-
-
-
+      { id: 23, name: "Electric Single Phase Ceiling Fans", price: 2700, image: "assests/Fan.png", category: ["electronics"] },
+      { id: 24, name: "Tp-link Outdoor Pan Tilt Security WiFi Camera, 1080P", price: 3000, image: "assests/cctv camera.png", category: ["electronics"] },
+      { id: 25, name: "Philips BT3125/15 Beard Trimmer", price: 1500, image: "assests/Timmer.png", category: ["electronics"] },
+      { id: 26, name: "Crompton Ozone 55 Litres Desert Air Cooler", price: 7000, image: "assests/Cooler.png", category: ["electronics"] },
+      { id: 27, name: "Havells 3.0 L Instanio Instant Water Heater", price: 20000, image: "assests/Heater.png", category: ["electronics"] },
+      { id: 28, name: "Panasonic SC HTS600GWK 600W 5.1CH Home Theater System", price: 20000, image: "assests/Home Theater.png", category: ["electronics"] },
+      { id: 29, name: "Sofa Yolo - 3 Seater LHS L Shape Sofa Set", price: 38000, image: "assests/Sofa.png", category: ["home-appliance"] },
+      { id: 30, name: "Samsung Galaxy Tab S10 FE, 8 GB RAM, 128 GB Storage", price: 45000, image: "assests/Tab.png", category: ["electronics"] },
+      { id: 31, name: "Samsung Galaxy S24 Ultra 12/256GB", price: 45000, image: "assests/Samsung.png", category: ["electronics"] },
+      { id: 32, name: "Titan Karishma Quartz Analog Silver Dial Watch", price: 2500, image: "assests/Watch.png", category: ["accessories"] },
+      { id: 33, name: "Epson L3250 Ink Tank Printer", price: 14000, image: "assests/Xerox.png", category: ["electronics"] },
+      { id: 34, name: "Classmate Notebook Queen Size (A4 Size) 172 Pages", price: 200, image: "assests/Notebook_classmate.png", category: ["stationery"] },
+      { id: 35, name: "Classmate Asteroid Geometry Box", price: 200, image: "assests/Geometry box.png", category: ["stationery"] },
+      { id: 36, name: "Apsara Platinum Pencils 10 Count", price: 50, image: "assests/Pencils.png", category: ["stationery"] },
+      { id: 37, name: "Reynolds R7 Roller Ball Pen", price: 50, image: "assests/Roller ball pen.png", category: ["stationery"] },
+      { id: 38, name: "FABER-CASTELL DUST-FREE ERASER", price: 20, image: "assests/Eraser.png", category: ["stationery"] },
+      { id: 39, name: "12 Inch Table Fan", price: 4000, image: "assests/Table fan.png", category: ["electronics", "home-appliance"] },
+      { id: 40, name: "foziq Black Printed Table Lamps", price: 8000, image: "assests/Table light.png", category: ["electronics"] }
     ];
 
     // Cart array to store selected items with quantities
@@ -257,6 +313,11 @@
     const deliveryDate = document.getElementById("delivery-date");
     const address = document.getElementById("address");
     const paymentMethod = document.getElementById("payment-method");
+    const paymentDetails = document.getElementById("payment-details");
+    const successModal = document.getElementById("success-modal");
+    const closeSuccess = document.getElementById("close-success");
+    const successContent = document.getElementById("success-content");
+    const successMessage = document.getElementById("success-message");
     const cartSummary = document.getElementById("cart-summary");
     const viewCart = document.getElementById("view-cart");
     const cartCountSummary = document.getElementById("cart-count-summary");
@@ -289,7 +350,6 @@
 
     // Mock authentication
     function authenticate(username, password) {
-      // Hardcoded credentials for demo purposes
       return username === "user" && password === "password123";
     }
 
@@ -345,7 +405,6 @@
         });
       }
 
-      // Add event listeners to "Add to Cart" buttons
       document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", () => {
           const productId = parseInt(button.dataset.id);
@@ -368,7 +427,7 @@
       }
 
       updateCart();
-      currentProductId = productId; // Set current product for quantity control
+      currentProductId = productId;
     }
 
     // Remove item from cart
@@ -496,17 +555,151 @@
       cartModal.classList.remove("hidden");
     });
 
+    // Update payment fields based on payment method
+    function updatePaymentFields() {
+      paymentDetails.innerHTML = "";
+      paymentDetails.classList.remove("hidden");
+
+      if (paymentMethod.value === "credit-card") {
+        paymentDetails.innerHTML = `
+          <div class="mb-4">
+            <label for="card-number" class="block text-gray-700 font-semibold mb-2">Credit Card Number</label>
+            <input type="text" id="card-number" class="w-full p-2 border rounded" placeholder="1234 5678 9012 3456" pattern="\\d{16}" required>
+          </div>
+          <div class="flex space-x-4 mb-4">
+            <div class="w-1/2">
+              <label for="expiry-date" class="block text-gray-700 font-semibold mb-2">Expiry Date</label>
+              <input type="text" id="expiry-date" class="w-full p-2 border rounded" placeholder="MM/YY" pattern="\\d{2}/\\d{2}" required>
+            </div>
+            <div class="w-1/2">
+              <label for="cvv" class="block text-gray-700 font-semibold mb-2">CVV</label>
+              <input type="text" id="cvv" class="w-full p-2 border rounded" placeholder="123" pattern="\\d{3}" required>
+            </div>
+          </div>
+        `;
+      } else if (paymentMethod.value === "upi") {
+        paymentDetails.innerHTML = `
+          <div class="mb-4">
+            <label for="upi-id" class="block text-gray-700 font-semibold mb-2">UPI ID</label>
+            <input type="text" id="upi-id" class="w-full p-2 border rounded" placeholder="example@upi" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+" required>
+          </div>
+        `;
+      } else if (paymentMethod.value === "net-banking") {
+        paymentDetails.innerHTML = `
+          <div class="mb-4">
+            <label for="bank-selection" class="block text-gray-700 font-semibold mb-2">Select Bank</label>
+            <select id="bank-selection" class="w-full p-2 border rounded" required>
+              <option value="" disabled selected>Select your bank</option>
+              <option value="sbi">State Bank of India</option>
+              <option value="hdfc">HDFC Bank</option>
+              <option value="icici">ICICI Bank</option>
+              <option value="axis">Axis Bank</option>
+              <option value="kotak">Kotak Mahindra Bank</option>
+            </select>
+          </div>
+        `;
+      } else if (paymentMethod.value === "cod") {
+        paymentDetails.classList.add("hidden");
+      }
+    }
+
+    // Event listener for payment method change
+    paymentMethod.addEventListener("change", updatePaymentFields);
+
+    // Trigger CSS confetti animation
+    function triggerConfetti() {
+      console.log("Triggering confetti animation");
+      const colors = ["red", "green", "blue", "yellow"];
+      const shapes = ["star", "circle", "square"];
+      const confettiCount = 100;
+
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement("div");
+        const size = Math.random() * 10 + 5; // Random size between 5px and 15px
+        confetti.className = `confetti ${colors[Math.floor(Math.random() * colors.length)]} ${shapes[Math.floor(Math.random() * shapes.length)]}`;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        confetti.style.left = `${Math.random() * 100}vw`;
+        confetti.style.animation = `fall ${Math.random() * 2 + 1}s linear`;
+        confetti.style.setProperty("--drift", (Math.random() * 40 - 20)); // Random horizontal drift
+        document.body.appendChild(confetti);
+
+        // Remove confetti after animation
+        setTimeout(() => {
+          confetti.remove();
+        }, 3000);
+      }
+    }
+
+    // Show success modal with blast animation
+    function showSuccessModal(message) {
+      console.log("Showing success modal with message:", message);
+      successMessage.textContent = `Delivery Date: ${deliveryDate.value}\nAddress: ${address.value}\n${message}`;
+      successModal.classList.remove("hidden");
+      triggerConfetti();
+    }
+
+    // Close success modal
+    closeSuccess.addEventListener("click", () => {
+      console.log("Closing success modal");
+      successModal.classList.add("hidden");
+      productSection.classList.remove("hidden");
+      contactSection.classList.add("hidden");
+      loginSection.classList.add("hidden");
+      logoutSection.classList.add("hidden");
+      renderProducts();
+    });
+
     // Place order
     placeOrder.addEventListener("click", () => {
-      if (deliveryDate.value && address.value && paymentMethod.value) {
-        alert(`Order placed!\nDelivery Date: ${deliveryDate.value}\nAddress: ${address.value}\nPayment Method: ${paymentMethod.value}`);
-        cart = [];
-        updateCart();
+      console.log("Place Order button clicked");
+      const paymentDetailsInputs = paymentDetails.querySelectorAll("input, select");
+      let paymentValid = true;
+
+      if (paymentMethod.value === "credit-card") {
+        const cardNumber = document.getElementById("card-number")?.value;
+        const expiryDate = document.getElementById("expiry-date")?.value;
+        const cvv = document.getElementById("cvv")?.value;
+        if (!cardNumber || !/^\d{16}$/.test(cardNumber)) {
+          paymentValid = false;
+        }
+        if (!expiryDate || !/^\d{2}\/\d{2}$/.test(expiryDate)) {
+          paymentValid = false;
+        }
+        if (!cvv || !/^\d{3}$/.test(cvv)) {
+          paymentValid = false;
+        }
+      } else if (paymentMethod.value === "upi") {
+        const upiId = document.getElementById("upi-id")?.value;
+        if (!upiId || !/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+/.test(upiId)) {
+          paymentValid = false;
+        }
+      } else if (paymentMethod.value === "net-banking") {
+        const bankSelection = document.getElementById("bank-selection")?.value;
+        if (!bankSelection) {
+          paymentValid = false;
+        }
+      }
+
+      if (deliveryDate.value && address.value && paymentMethod.value && (paymentMethod.value === "cod" || paymentValid)) {
+        console.log("Checkout details valid, proceeding to show success modal");
+        let paymentInfo = `Payment Method: ${paymentMethod.value}`;
+        if (paymentMethod.value === "credit-card") {
+          paymentInfo += `\nCard Number: ${document.getElementById("card-number").value}\nExpiry Date: ${document.getElementById("expiry-date").value}\nCVV: ${document.getElementById("cvv").value}`;
+        } else if (paymentMethod.value === "upi") {
+          paymentInfo += `\nUPI ID: ${document.getElementById("upi-id").value}`;
+        } else if (paymentMethod.value === "net-banking") {
+          paymentInfo += `\nBank: ${document.getElementById("bank-selection").value}`;
+        }
         checkoutModal.classList.add("hidden");
         cartSummary.classList.add("hidden");
         quantityControl.classList.add("hidden");
+        cart = [];
+        updateCart();
+        showSuccessModal(paymentInfo);
       } else {
-        alert("Please fill in all checkout details.");
+        console.log("Invalid checkout details");
+        alert("Please fill in all checkout details correctly.");
       }
     });
 
@@ -667,3 +860,4 @@
   </script>
 </body>
 </html>
+```
